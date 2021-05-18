@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:park_here/pages/landing.dart';
 import 'package:park_here/pages/login.dart';
+import 'package:park_here/pages/home.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,7 +18,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
       ),
-      home: LoginPage(),
+      routes: {
+        '/': (context) => Landing(),
+        '/login': (context) => Login(),
+        '/home': (context) => Home()
+      },
     );
   }
 }
