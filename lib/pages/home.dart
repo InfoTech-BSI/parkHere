@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:shared_preferences/shared_preferences.dart";
 
@@ -32,19 +33,48 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text("Home"),
+        title: Text("Localização"),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.black,
       ),
       body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text("Bem vindo " + usuario),
-            RaisedButton(
-              onPressed: Logout,
-              child: Text("Logout"),
-            )
-          ],
+        padding: EdgeInsets.only(top: 60, left: 40, right: 40),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Escolha o estacionamento",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+                textAlign: TextAlign.left,
+              ),
+              SizedBox(
+                width: 300,
+                height: 300,
+                child: Image.asset("assets/mapa.PNG"),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              MaterialButton(
+                shape: CircleBorder(),
+                color: Colors.yellow[600],
+                padding: EdgeInsets.all(10),
+                onPressed: () {
+                  Navigator.pushNamedAndRemoveUntil(context, "/estacionamento",
+                      ModalRoute.withName('/estacionamento'));
+                },
+                child: Icon(
+                  Icons.search,
+                  size: 40,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

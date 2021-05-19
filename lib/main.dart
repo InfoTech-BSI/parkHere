@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:park_here/pages/landing.dart';
 import 'package:park_here/pages/login.dart';
 import 'package:park_here/pages/home.dart';
+import 'package:park_here/pages/estacionamento.dart';
 
 void main() {
   runApp(MyApp());
@@ -21,7 +22,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => Landing(),
         '/login': (context) => Login(),
-        '/home': (context) => Home()
+        '/home': (context) => Home(),
+        '/estacionamento': (context) => Estacionamento(),
+        //'/cadastro': (context) => Cadastro()
       },
     );
   }
