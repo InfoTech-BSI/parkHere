@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:shared_preferences/shared_preferences.dart";
+import 'package:http/http.dart' as http;
+import '../class/usuario.dart';
+import 'dart:convert';
 
 class Login extends StatefulWidget {
   @override
@@ -20,20 +23,36 @@ class LoginPage extends State<Login> {
 
   void Acessar() async {
     final FormState form = formKey.currentState;
+    
+    final response =
+        await http.post(Uri.parse('http://localhost:3000/login/'),headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },body: jsonEncode(<String, String>{
+            'Email': usuario,
+            'Senha': senha
+          })
+        );
+
     if (!form.validate()) {
       autoavaliacao = true;
       MostrarMensagem(
           'Dados inválidos detectados! Corrijá os campos em vermelho!');
     } else {
       form.save();
-      if (usuario == "admin" && senha == "senha12345") {
+
+      if (response.body.contains("Login feito com sucesso!")) {
+        Usuario user = Usuario.fromJson(jsonDecode(response.body));
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('usuario', usuario);
+        prefs.setInt('usuarioId', user.id);
+        prefs.setString('usuarioNome', user.nome);
+        prefs.setString('usuarioEmail', user.email);
+        prefs.setString('usuarioNascimento', user.nascimento);
         Navigator.pushNamedAndRemoveUntil(
             context, "/home", ModalRoute.withName('/home'));
       } else {
-        MostrarMensagem('Usuário ou senha inválidos!');
+          MostrarMensagem('Usuário ou senha inválidos!');
       }
+
     }
   }
 
@@ -69,7 +88,7 @@ class LoginPage extends State<Login> {
                             fontWeight: FontWeight.w400,
                             fontSize: 20)),
                     style: TextStyle(fontSize: 20),
-                    onSaved: (String value) {
+                    onChanged: (String value) {
                       usuario = value;
                     },
                   ),
@@ -86,7 +105,7 @@ class LoginPage extends State<Login> {
                             fontWeight: FontWeight.w400,
                             fontSize: 20)),
                     style: TextStyle(fontSize: 20),
-                    onSaved: (String value) {
+                    onChanged: (String value) {
                       senha = value;
                     },
                   ),
