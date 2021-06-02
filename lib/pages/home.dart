@@ -1,10 +1,53 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import "package:shared_preferences/shared_preferences.dart";
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
+}
+
+Future<String> callAsyncFetch() async{
+  final response = await http.get(Uri.parse('http://localhost:3000/estacionamento/'));
+
+  return response.body;
+} 
+
+class ListaEstacionamentos extends StatelessWidget {
+  @override
+  Widget build(context) {
+    return FutureBuilder<String>(
+      future: callAsyncFetch(),
+      builder: (context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.hasData) {
+          
+        Map<String, dynamic> myMap = json.decode(snapshot.data);
+        List<dynamic> estacionamentos = myMap["data"];
+        
+        return ListView.separated(
+          padding: const EdgeInsets.all(8),
+          itemCount: estacionamentos.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundImage: AssetImage("estacionamentos/"+estacionamentos[index]["imagem"]),
+              ),
+              title: Text(estacionamentos[index]["nome"]),
+              subtitle: Text(estacionamentos[index]["endereco"]),
+            );
+          },
+          separatorBuilder: (context, index) => Divider(
+            color: Colors.black,
+          ),
+        );
+        } else {
+          return CircularProgressIndicator();
+        }
+      }
+    );
+  }
 }
 
 class _HomeState extends State<Home> {
@@ -53,9 +96,8 @@ class _HomeState extends State<Home> {
                 textAlign: TextAlign.left,
               ),
               SizedBox(
-                width: 300,
-                height: 300,
-                child: Image.asset("assets/mapa.PNG"),
+                height: 400,
+                child: ListaEstacionamentos()
               ),
               SizedBox(
                 height: 20,
