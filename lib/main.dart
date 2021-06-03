@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:park_here/pages/landing.dart';
 import 'package:park_here/pages/login.dart';
 import 'package:park_here/provider/usuarios.dart';
 import 'package:park_here/routes/app_routs.dart';
 import 'package:park_here/views/usuario_form.dart';
 import 'package:provider/provider.dart';
+import 'package:park_here/pages/home.dart';
+import 'package:park_here/pages/estacionamento.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -29,6 +34,16 @@ class MyApp extends StatelessWidget {
         home: LoginPage(),
         routes: {AppRoutes.USUARIO_FORM: (ctx) => UsuarioForm()},
       ),
+
+
+      routes: {
+        '/': (context) => Landing(),
+        '/login': (context) => Login(),
+        '/home': (context) => Home(),
+        '/estacionamento': (context) => Estacionamento(),
+        //'/cadastro': (context) => Cadastro()
+      },
+
     );
   }
 }
