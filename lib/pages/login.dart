@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:park_here/views/usuario_form.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -91,12 +92,15 @@ class LoginPage extends StatelessWidget {
           Container(
             height: 40,
             child: TextButton(
-              child: Text(
-                "Cadastre-se",
-                textAlign: TextAlign.center,
-              ),
-              onPressed: () => {},
-            ),
+                child: Text(
+                  "Cadastre-se",
+                  textAlign: TextAlign.center,
+                ),
+                onPressed: () => {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => UsuarioForm()),
+                      )
+                    }),
           )
         ],
       ),
