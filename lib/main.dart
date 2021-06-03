@@ -31,19 +31,16 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.grey,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: LoginPage(),
-        routes: {AppRoutes.USUARIO_FORM: (ctx) => UsuarioForm()},
+        home: Login(),
+        routes: {
+          AppRoutes.USUARIO_FORM: (ctx) => UsuarioForm(),
+          //'/': (context) => Landing(),
+          '/login': (context) => Login(),
+          '/home': (context) => Home(),
+          '/estacionamento': (context) => Estacionamento(),
+          //'/cadastro': (context) => Cadastro()
+        },
       ),
-
-
-      routes: {
-        '/': (context) => Landing(),
-        '/login': (context) => Login(),
-        '/home': (context) => Home(),
-        '/estacionamento': (context) => Estacionamento(),
-        //'/cadastro': (context) => Cadastro()
-      },
-
     );
   }
 }

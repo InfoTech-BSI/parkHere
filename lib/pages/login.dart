@@ -124,29 +124,27 @@ class LoginPage extends State<Login> {
                       onPressed: () => {},
                     ),
                   ),
-
-                  onPressed: () => {},
-                ),
-              )),
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            height: 40,
-            child: TextButton(
-                child: Text(
-                  "Cadastre-se",
-                  textAlign: TextAlign.center,
-                ),
-                onPressed: () => {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => UsuarioForm()),
-                      )
-                    }),
-          )
-        ],
-      ),
-    ));
+                  SizedBox(
+                    height: 20,
+                  ),
+                  //onPressed: () => {},
+          
+    //       Container(
+    //         height: 40,
+    //         child: TextButton(
+    //             child: Text(
+    //               "Cadastre-se",
+    //               textAlign: TextAlign.center,
+    //             ),
+    //             onPressed: () => {
+    //                   Navigator.of(context).push(
+    //                     MaterialPageRoute(builder: (context) => UsuarioForm()),
+    //                   )
+    //                 }),
+    //       )
+    //     ],
+    //   ),
+    // ));
 
                   SizedBox(
                     height: 20,
