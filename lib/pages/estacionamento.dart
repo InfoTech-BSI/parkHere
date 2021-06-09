@@ -227,7 +227,9 @@ class ListaEstacionamento extends StatelessWidget {
                         ),
                       ],
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/reservar');
+                    },
                   ),
                 ),
                 SizedBox(
@@ -251,7 +253,7 @@ class ListaEstacionamento extends StatelessWidget {
                         ),
                       ],
                     ),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => Navigator.pop(context),
                   ),
                 ),
               ],

@@ -8,6 +8,7 @@ import 'package:park_here/views/usuario_form.dart';
 import 'package:provider/provider.dart';
 import 'package:park_here/pages/home.dart';
 import 'package:park_here/pages/estacionamento.dart';
+import 'package:park_here/pages/reservar.dart';
 
 
 void main() {
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => Login(),
           '/home': (context) => Home(),
           '/estacionamento': (context) => Estacionamento(),
+          '/reservar': (context) => Reservar(),
           //'/cadastro': (context) => Cadastro()
         },
       ),
