@@ -91,9 +91,4 @@ class ListaEstacionamentosPage extends StatelessWidget {
           ),
         ));
   }
-
-  void _navigateToEstacionamento(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => EstacionamentoPage()));
-  }
 }
