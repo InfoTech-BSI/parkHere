@@ -1,7 +1,71 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:park_here/components/carregar_comp.dart';
+import "package:shared_preferences/shared_preferences.dart";
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import 'package:park_here/pages/estacionamento.dart';
+
+Future<String> callAsyncFetch() async{
+  final response = await http.get(Uri.parse('http://localhost:3000/estacionamento/'));
+
+  return response.body;
+}
+
+class ListaEstacionamentos extends StatelessWidget {
+
+  setDadosEstacionamento(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('IdEstacionamento', id);
+  }
+
+  @override
+  Widget build(context) {
+    return FutureBuilder<String>(
+      future: callAsyncFetch(),
+      builder: (context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.hasData) {
+          
+          Map<String, dynamic> myMap = json.decode(snapshot.data);
+          List<dynamic> estacionamentos = myMap["data"];
+          
+          return ListView.separated(
+            padding: const EdgeInsets.all(0),
+            itemCount: estacionamentos.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage("estacionamentos/"+estacionamentos[index]["imagem"]),
+                  ),
+                  title: Text(estacionamentos[index]["nome"]),
+                  subtitle: Text(estacionamentos[index]["endereco"]),
+                  onTap: () => {
+                    setDadosEstacionamento(estacionamentos[index]["id"].toString()),
+                    _navigateToEstacionamento(context)
+                  },
+                ),
+              );
+            },
+            separatorBuilder: (context, index) => Divider(
+              color: Colors.black,
+              height: 2,
+            ),
+          );
+        } else {
+          return CarregarComponente();
+        }
+      }
+    );
+  }
+
+  void _navigateToEstacionamento(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => EstacionamentoPage()));
+  }
+}
 
 class ListaEstacionamentosPage extends StatelessWidget {
   @override
@@ -16,51 +80,13 @@ class ListaEstacionamentosPage extends StatelessWidget {
           color: Colors.white,
           child: ListView(
             children: [
-              Card(
-                  child: ListTile(
-                title: Text("4 Folhas"),
-                subtitle: Text("Av. Saudade 205"),
-                leading: CircleAvatar(
-                  child: Image.asset("assets/4folhas.png"),
-                ),
-                onTap: () => _navigateToEstacionamento(context),
-              )),
+              SizedBox(
+                height: 400,
+                child: ListaEstacionamentos()
+              ),
               SizedBox(
                 height: 20,
-              ),
-              Card(
-                  child: ListTile(
-                title: Text("2 Pinheiros"),
-                subtitle: Text("Av. Sampaio Vidal 1537"),
-                leading: CircleAvatar(
-                  child: Image.asset("assets/2pinheiros.png"),
-                ),
-                onTap: () => _navigateToEstacionamento(context),
-              )),
-              SizedBox(
-                height: 20,
-              ),
-              Card(
-                  child: ListTile(
-                title: Text("Giga"),
-                subtitle: Text("Av. Pres. Tancredo de Almeida 50"),
-                leading: CircleAvatar(
-                  child: Image.asset("assets/giga.png"),
-                ),
-                onTap: () => _navigateToEstacionamento(context),
-              )),
-              SizedBox(
-                height: 20,
-              ),
-              Card(
-                  child: ListTile(
-                title: Text("Riachuelo"),
-                subtitle: Text("R. São Luiz 719"),
-                leading: CircleAvatar(
-                  child: Image.asset("assets/riachoelo.png"),
-                ),
-                onTap: () => _navigateToEstacionamento(context),
-              )),
+              )
             ],
           ),
         ));
