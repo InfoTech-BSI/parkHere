@@ -3,9 +3,31 @@ import 'package:park_here/pages/minhas.reservas.dart';
 import 'package:park_here/pages/editar.usuario.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import "package:shared_preferences/shared_preferences.dart";
 
+class MinhaContaPage extends StatefulWidget {
+  @override
+  MinhaContaState createState() => MinhaContaState();
+}
 
-class MinhaContaPage extends StatelessWidget {
+class MinhaContaState extends State<MinhaContaPage> {
+  String _nome = 'Carregando';
+
+  @override
+  void initState() {
+    super.initState();
+    toggleTitulo();
+  }
+
+  Future<void> toggleTitulo() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var nome = prefs.getString('usuarioNome');
+
+    setState(() {
+      _nome = nome;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,13 +43,14 @@ class MinhaContaPage extends StatelessWidget {
               backgroundImage: NetworkImage(
                 "https://www.rd.com/wp-content/uploads/2017/09/01-shutterstock_476340928-Irina-Bg.jpg",
               ),
+              backgroundColor: Colors.white,
               radius: 50,
             ),
             SizedBox(
               height: 10,
             ),
             Text(
-              "Alice James",
+              _nome,
               style: TextStyle(
                 fontSize: 22,
                 color: Colors.black,
@@ -56,7 +79,7 @@ class MinhaContaPage extends StatelessWidget {
             ListTile(
                 title: Text("Avisos"), leading: Icon(Icons.article_rounded)),
             SizedBox(
-              height: 160,
+              height: 140,
             ),
             Container(
               height: 60,
