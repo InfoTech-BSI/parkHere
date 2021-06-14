@@ -1,5 +1,7 @@
+import 'package:park_here/pages/reserva.efetuada.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:park_here/components/carregar_comp.dart';
 import "package:shared_preferences/shared_preferences.dart";
 import 'package:http/http.dart' as http;
@@ -10,70 +12,133 @@ class EstacionamentoPage extends StatefulWidget {
   EstacionamentoState createState() => EstacionamentoState();
 }
 
-Future<String> callAsyncFetch() async{
+Future<String> callAsyncFetch() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var id = prefs.getString('IdEstacionamento');
-  final response = await http.get(Uri.parse('http://localhost:3000/estacionamento/'+id));
+  final response =
+      await http.get(Uri.parse('http://localhost:3000/estacionamento/' + id));
 
   return response.body;
-} 
+}
 
 class ListaEstacionamento extends StatelessWidget {
+  String dropdownValue = 'Selecione o horário';
+  String dropdownValueDia = 'Selecione o dia';
+  
+  void enviarReserva(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var idUsuario = prefs.getInt('usuarioId');
+    var idEstacionamento = prefs.getString('IdEstacionamento');
+    var inicioReserva = prefs.getString('inicioReserva');
+    var fimReserva = prefs.getString('fimReserva');
+    var diaReserva = prefs.getString('diaReserva');
 
-  carregaDias(String dias){
+    await http.post(Uri.parse('http://localhost:3000/reserva/'),headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },body: jsonEncode(<String, String>{
+        'idUsuario': idUsuario.toString(),
+        'idEstacionamento': idEstacionamento,
+        'inicioReserva': inicioReserva,
+        'fimReserva': fimReserva,
+        'diaReserva': diaReserva,
+        'atualizacao': DateTime.now().toString()
+      })
+    );
+
+    _navigateToMensagem(context);
+  }
+
+  carregaDias(String dias) {
     var saida = dias;
-    
-    if (dias == "2-3-4-5"){
+
+    if (dias == "2-3-4-5") {
       saida = "Segunda-feira a Quinta-feira";
-    } else if (dias == "2-3-4-5-6"){
+    } else if (dias == "2-3-4-5-6") {
       saida = "Segunda-feira a Sexta-feira";
-    } else if (dias == "2-3-4-5-6-7"){
-      saida = "Segunda-feira a Sabádo";
-    } else if (dias == "1-2-3-4-5-6-7"){
+    } else if (dias == "2-3-4-5-6-7") {
+      saida = "Segunda-feira a Sábado";
+    } else if (dias == "1-2-3-4-5-6-7") {
       saida = "Todos os dias";
     }
 
     return saida;
   }
 
-  carregaHoras(String horas){
+  carregaHoras(String horas) {
     var hora = horas.split('-');
     var saida = "";
-    
+
     saida = "Das " + hora[0] + " às " + hora[1] + " horas";
 
     return saida;
   }
 
-  mostraWhatsapp(String numero){
-
-    if(numero == ""){
+  mostraWhatsapp(String numero) {
+    if (numero == "") {
       return SizedBox(
-        height: 10,
+        height: 0,
       );
     } else {
-      return Container(
-        child: Row(children: <Widget>[
-          IconButton(
-            iconSize: 40,
-            icon: Image.asset(
-              "whatsapp-logo.png",
-              width: 50,
-              height: 50
-              ),
-            color: Colors.white,
-            onPressed: () {},
+      return Card(
+        child: ListTile(
+          title: Text(numero),
+          leading: CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Image.asset("whats.png"),
           ),
-          Text(
-            " "+numero,
-            style: TextStyle(
-              fontSize: 20,
-            ),
-            textAlign: TextAlign.left,
-          ),
-        ]),
+        )
       );
     }
+  }
+  
+  converteDia(String tempo){
+    var saida = "";
+    
+    var dia = tempo.substring(0,2);
+    var mes = tempo.substring(3,5);
+    saida = "2021-" + mes + "-" + dia;
+
+    return saida;
+  }
+  
+  void salvarData(data) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('diaReserva', data);
+  }
+  
+  
+  List<String> geraHora(String horas){
+    var saida = ['Selecione o horário'];
+    var inicio = int.parse(horas.split('-')[0]);
+    var fim = int.parse(horas.split('-')[1]);
+    
+    for (int i = inicio; i <= fim; i ++) {
+      saida.add('$i:00');
+    }
+    
+    return saida;
+  }
+
+  converteHora(String tempo){
+    var saida = "00:00:00";
+
+    if(tempo != "null") {
+      var hora = tempo.substring(0,2);
+      var minutos = tempo.substring(3,5);
+      saida = hora + ":" + minutos + ":00";
+    }
+
+    return saida;
+  }
+
+  void salvarHoraInicio(String hora) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('inicioReserva', hora);
+  }
+
+  void salvarHoraFim(String hora) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('fimReserva', hora);
   }
 
   @override
@@ -82,51 +147,30 @@ class ListaEstacionamento extends StatelessWidget {
       future: callAsyncFetch(),
       builder: (context, AsyncSnapshot<String> snapshot) {
         if (snapshot.hasData) {
-          
           Map<String, dynamic> myMap = json.decode(snapshot.data);
 
           List<dynamic> estacionamento = myMap["data"];
 
           return Container(
-            padding: EdgeInsets.only(left: 20, right: 20),
+            padding: EdgeInsets.only(left: 10, right: 10),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Dados do estacionamento",
-                  style: TextStyle(
-                    fontSize: 30,
-                  ),
+                  'Informações',
+                  style: TextStyle(fontSize: 30),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(
-                  height: 15,
+                  height: 20,
                 ),
-                Container(
-                  child: Row(children: <Widget>[
-                    Text(
-                      "Nome: " + 
-                      estacionamento[0]["nome"],
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ])
+                Text(
+                  'Dias de funcionamento:',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.left,
                 ),
                 SizedBox(
-                  height: 15,
-                ),
-                Container(
-                  child: Row(children: <Widget>[
-                    Text(
-                      "Dias de funcionamento:",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ]),
+                  height: 10,
                 ),
                 Container(
                   child: Row(children: <Widget>[
@@ -140,18 +184,15 @@ class ListaEstacionamento extends StatelessWidget {
                   ]),
                 ),
                 SizedBox(
-                  height: 15,
+                  height: 20,
                 ),
-                Container(
-                  child: Row(children: <Widget>[
-                    Text(
-                      "Horário de funcionamento:",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ]),
+                Text(
+                  'Horário:',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.left,
+                ),
+                SizedBox(
+                  height: 10,
                 ),
                 Container(
                   child: Row(children: <Widget>[
@@ -165,42 +206,24 @@ class ListaEstacionamento extends StatelessWidget {
                   ]),
                 ),
                 SizedBox(
-                  height: 15,
+                  height: 20,
                 ),
-                Container(
-                  child: Row(children: <Widget>[
-                    Text(
-                      "Contato:",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ]),
+                Text(
+                  'Contatos:',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.left,
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Container(
-                  child: Row(children: <Widget>[
-                    IconButton(
-                      iconSize: 40,
-                      icon: Image.asset(
-                        "phone.png",
-                        width: 50,
-                        height: 50
-                        ),
-                      color: Colors.white,
-                      onPressed: () {},
+                Card(
+                  child: ListTile(
+                    title: Text(estacionamento[0]["telefone"]),
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Image.asset("phone.png"),
                     ),
-                    Text(
-                      " "+estacionamento[0]["telefone"],
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ]),
+                  )
                 ),
                 SizedBox(
                   height: 5,
@@ -209,51 +232,77 @@ class ListaEstacionamento extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                Container(
-                  width: 200,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.green[400],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "RESERVAR",
-                          style: TextStyle(
-                            fontSize: 32,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/reservar');
-                    },
-                  ),
+                DropdownButtonFormField(
+                  value: dropdownValueDia,
+                  icon: const Icon(Icons.arrow_downward),
+                  iconSize: 24,
+                  items: <String>['Selecione o dia', '15/06/2021', '16/06/2021', '17/06/2021']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String newValue) {
+                    print(converteDia(newValue));
+                    salvarData(converteDia(newValue));
+                  },
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                DropdownButtonFormField(
+                  value: dropdownValue,
+                  icon: const Icon(Icons.arrow_downward),
+                  iconSize: 24,
+                  items: geraHora(estacionamento[0]["horas_funciona"])
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String newValue) {
+                    print(converteHora(newValue));
+                    salvarHoraInicio(converteHora(newValue));
+                  },
                 ),
                 SizedBox(
                   height: 5,
                 ),
+                DropdownButtonFormField(
+                  value: dropdownValue,
+                  icon: const Icon(Icons.arrow_downward),
+                  iconSize: 24,
+                  items: geraHora(estacionamento[0]["horas_funciona"])
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String newValue) {
+                    print(converteHora(newValue));
+                    salvarHoraFim(converteHora(newValue));
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 Container(
-                  width: 200,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.yellow[600],
+                  height: 60,
+                  decoration: BoxDecoration(
+                      color: Colors.green[400],
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  child: TextButton(
+                    child: Text(
+                      "Reservar",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 20),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "VOLTAR",
-                          style: TextStyle(
-                            fontSize: 32,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => {
+                      enviarReserva(context)
+                    },
                   ),
                 ),
               ],
@@ -265,51 +314,44 @@ class ListaEstacionamento extends StatelessWidget {
       }
     );
   }
+
+  void _navigateToMensagem(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => ReservaEfetuadaPage()));
+  }
 }
 
 class EstacionamentoState extends State<EstacionamentoPage> {
-  String usuario;
+  String _estacionamento = 'Carregando';
 
   @override
   void initState() {
     super.initState();
-    getDadosUsuario();
+    toggleTitulo();
   }
 
-  getDadosUsuario() async {
+  Future<void> toggleTitulo() async {
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    var nome = prefs.getString('NomeEstacionamento');
+
     setState(() {
-      this.usuario = (prefs.getString('usuario') ?? "");
+      _estacionamento = nome;
     });
-  }
-
-  void Logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('usuario');
-    Navigator.pushNamedAndRemoveUntil(
-        context, "/login", ModalRoute.withName('/login'));
   }
 
   @override
   Widget build(BuildContext context) {
-    return new WillPopScope(
-    onWillPop: () async => false,
-    child: new Scaffold(
+    return Scaffold(
       appBar: AppBar(
-        title: Text("Localização"),
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.black,
-      ),
+          centerTitle: true,
+          title: Text('$_estacionamento'),
+          backgroundColor: Colors.black),
       body: Container(
-        padding: EdgeInsets.only(bottom: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ListaEstacionamento(),
-          ],
-        ),
+        padding: EdgeInsets.only(top: 20, left: 30, right: 30),
+        color: Colors.white,
+        child: ListaEstacionamento(),
       ),
-    ),
     );
   }
 }

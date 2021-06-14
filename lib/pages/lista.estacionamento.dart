@@ -16,9 +16,10 @@ Future<String> callAsyncFetch() async{
 
 class ListaEstacionamentos extends StatelessWidget {
 
-  setDadosEstacionamento(String id) async {
+  setDadosEstacionamento(String id, String nome) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('IdEstacionamento', id);
+    prefs.setString('NomeEstacionamento', nome);
   }
 
   @override
@@ -39,18 +40,22 @@ class ListaEstacionamentos extends StatelessWidget {
                 child: ListTile(
                   leading: CircleAvatar(
                     backgroundImage: AssetImage("estacionamentos/"+estacionamentos[index]["imagem"]),
+                    backgroundColor: Colors.white,
                   ),
                   title: Text(estacionamentos[index]["nome"]),
                   subtitle: Text(estacionamentos[index]["endereco"]),
                   onTap: () => {
-                    setDadosEstacionamento(estacionamentos[index]["id"].toString()),
+                    setDadosEstacionamento(
+                      estacionamentos[index]["id"].toString(),
+                      estacionamentos[index]["nome"]
+                    ),
                     _navigateToEstacionamento(context)
                   },
                 ),
               );
             },
             separatorBuilder: (context, index) => Divider(
-              color: Colors.black,
+              color: Colors.white,
               height: 2,
             ),
           );
@@ -71,24 +76,25 @@ class ListaEstacionamentosPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            centerTitle: true,
-            title: Text('Lista de Estabelecimentos'),
-            backgroundColor: Colors.black),
-        body: Container(
-          padding: EdgeInsets.only(top: 40, left: 40, right: 40),
-          color: Colors.white,
-          child: ListView(
-            children: [
-              SizedBox(
-                height: 400,
-                child: ListaEstacionamentos()
-              ),
-              SizedBox(
-                height: 20,
-              )
-            ],
-          ),
-        ));
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('Lista de Estabelecimentos'),
+        backgroundColor: Colors.black),
+      body: Container(
+        padding: EdgeInsets.only(top: 40, left: 40, right: 40),
+        color: Colors.white,
+        child: ListView(
+          children: [
+            SizedBox(
+              height: 400,
+              child: ListaEstacionamentos()
+            ),
+            SizedBox(
+              height: 20,
+            )
+          ],
+        ),
+      )
+    );
   }
 }
