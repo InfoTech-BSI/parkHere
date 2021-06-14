@@ -5,7 +5,7 @@ import "package:shared_preferences/shared_preferences.dart";
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class Estacionamento extends StatefulWidget {
+class EstacionamentoPage extends StatefulWidget {
   @override
   EstacionamentoState createState() => EstacionamentoState();
 }
@@ -267,7 +267,7 @@ class ListaEstacionamento extends StatelessWidget {
   }
 }
 
-class EstacionamentoState extends State<Estacionamento> {
+class EstacionamentoState extends State<EstacionamentoPage> {
   String usuario;
 
   @override
