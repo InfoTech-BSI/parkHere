@@ -5,7 +5,7 @@ import "package:shared_preferences/shared_preferences.dart";
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class Home extends StatefulWidget {
+class HomePage extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
@@ -62,7 +62,7 @@ class ListaEstacionamentos extends StatelessWidget {
   }
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<HomePage> {
   String usuario;
 
   @override
