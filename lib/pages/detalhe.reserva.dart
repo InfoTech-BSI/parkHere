@@ -11,7 +11,7 @@ Future<String> callAsyncFetch() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var id = prefs.getString('IdReserva');
   final response =
-      await http.get(Uri.parse('http://localhost:3000/reserva/' + id));
+      await http.get(Uri.parse('https://parkhere-api.herokuapp.com/reserva/' + id));
 
   return response.body;
 }
@@ -22,7 +22,7 @@ class ListaReserva extends StatelessWidget {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var idReserva = prefs.getString('IdReserva');
 
-    await http.delete(Uri.parse('http://localhost:3000/reserva/' + idReserva));
+    await http.delete(Uri.parse('https://parkhere-api.herokuapp.com/reserva/' + idReserva));
 
     _navigateToMensagem(context);
   }

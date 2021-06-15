@@ -16,7 +16,7 @@ Future<String> callAsyncFetch() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var id = prefs.getString('IdEstacionamento');
   final response =
-      await http.get(Uri.parse('http://localhost:3000/estacionamento/' + id));
+      await http.get(Uri.parse('https://parkhere-api.herokuapp.com/estacionamento/' + id));
 
   return response.body;
 }
@@ -33,7 +33,7 @@ class ListaEstacionamento extends StatelessWidget {
     var fimReserva = prefs.getString('fimReserva');
     var diaReserva = prefs.getString('diaReserva');
 
-    await http.post(Uri.parse('http://localhost:3000/reserva/'),headers: <String, String>{
+    await http.post(Uri.parse('https://parkhere-api.herokuapp.com/reserva/'),headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },body: jsonEncode(<String, String>{
         'idUsuario': idUsuario.toString(),

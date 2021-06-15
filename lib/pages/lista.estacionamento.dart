@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'package:park_here/pages/estacionamento.dart';
 
 Future<String> callAsyncFetch() async{
-  final response = await http.get(Uri.parse('http://localhost:3000/estacionamento/'));
+  final response = await http.get(Uri.parse('https://parkhere-api.herokuapp.com/estacionamento/'));
 
   return response.body;
 }

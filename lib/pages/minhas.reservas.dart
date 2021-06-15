@@ -11,7 +11,7 @@ Future<String> callAsyncFetch() async{
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var idUsuario = prefs.getInt('usuarioId').toString();
 
-  final response = await http.get(Uri.parse('http://localhost:3000/reserva/usuario/'+idUsuario));
+  final response = await http.get(Uri.parse('https://parkhere-api.herokuapp.com/reserva/usuario/'+idUsuario));
 
   return response.body;
 }
