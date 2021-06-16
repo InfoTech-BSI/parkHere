@@ -23,6 +23,26 @@ class ListaReservas extends StatelessWidget {
     prefs.setString('IdReserva', id);
   }
 
+  mostraData(String tempo) {
+    var saida = "";
+    
+    var dia = tempo.substring(8,10);
+    var mes = tempo.substring(5,7);
+    var ano = tempo.substring(0,4);
+    saida = dia + "/" + mes + "/" + ano;
+
+    return saida;
+  }
+
+  mostraHora(String hora) {
+    var saida = "";
+    
+    hora = hora.substring(0,2);
+    saida = hora + "hs";
+
+    return saida;
+  }
+
   @override
   Widget build(context) {
     return FutureBuilder<String>(
@@ -40,11 +60,15 @@ class ListaReservas extends StatelessWidget {
               return Card(
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: AssetImage("estacionamentos/"+estacionamentos[index]["imagem"]),
+                    backgroundImage: AssetImage("assets/estacionamentos/"+estacionamentos[index]["imagem"]),
                     backgroundColor: Colors.white,
                   ),
                   title: Text(estacionamentos[index]["nome"]),
-                  subtitle: Text(estacionamentos[index]["endereco"]),
+                  //subtitle: Text(estacionamentos[index]["endereco"]),
+                  subtitle: Text(
+                    mostraData(estacionamentos[index]["diaReserva"]) + " - " +
+                    mostraHora(estacionamentos[index]["inicioReserva"])
+                  ),
                   onTap: () => {
                     setDadosReserva(
                       estacionamentos[index]["idReserva"].toString()
@@ -89,38 +113,6 @@ class MinhasReservasPage extends StatelessWidget {
           color: Colors.white,
           child: ListView(
             children: [
-              Card(
-                  child: ListTile(
-                title: Text("4 Folhas"),
-                subtitle: Text("Av. Saudade 205"),
-                leading: CircleAvatar(
-                  child: Image.asset("estacionamentos/4folhas.png"),
-                ),
-                trailing: Text(
-                  'Pendente',
-                  style: TextStyle(color: Colors.red),
-                ),
-                onTap: () => _navigateToDetalheReserva(context),
-              )),
-              SizedBox(
-                height: 20,
-              ),
-              Card(
-                  child: ListTile(
-                title: Text("2 Pinheiros"),
-                subtitle: Text("Av. Sampaio Vidal 1537"),
-                leading: CircleAvatar(
-                  child: Image.asset("estacionamentos/2pinheiros.jpg"),
-                ),
-                trailing: Text(
-                  'Finalizada',
-                  style: TextStyle(color: Colors.green),
-                ),
-                onTap: () => _navigateToDetalheReserva(context),
-              )),
-              SizedBox(
-                height: 20,
-              ),
               SizedBox(
                 height: 400,
                 child: ListaReservas()
@@ -128,10 +120,5 @@ class MinhasReservasPage extends StatelessWidget {
             ],
           ),
         ));
-  }
-
-  void _navigateToDetalheReserva(BuildContext context) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => DetalheReservaPage()));
   }
 }

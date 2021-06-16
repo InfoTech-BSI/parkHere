@@ -84,7 +84,7 @@ class ListaEstacionamento extends StatelessWidget {
           title: Text(numero),
           leading: CircleAvatar(
             backgroundColor: Colors.white,
-            child: Image.asset("whats.png"),
+            child: Image.asset("assets/whats.png"),
           ),
         )
       );
@@ -221,7 +221,7 @@ class ListaEstacionamento extends StatelessWidget {
                     title: Text(estacionamento[0]["telefone"]),
                     leading: CircleAvatar(
                       backgroundColor: Colors.white,
-                      child: Image.asset("phone.png"),
+                      child: Image.asset("assets/phone.png"),
                     ),
                   )
                 ),

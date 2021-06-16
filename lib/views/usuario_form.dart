@@ -36,7 +36,7 @@ class UsuarioForm extends StatelessWidget {
                 Container(
                     width: 180,
                     height: 180,
-                    child: Image.asset('assets/logo.PNG')),
+                    child: Image.asset('logo.png')),
                 TextFormField(
                     initialValue: _formData['nome'],
                     decoration: InputDecoration(labelText: 'Nome'),
@@ -133,17 +133,7 @@ class UsuarioForm extends StatelessWidget {
                           ),
                         ],
                       ),
-                      onPressed: () => {
-                        if (_formKey.currentState.validate())
-                          {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => Login()),
-                            )
-                          }
-                        else
-                          {print("Preencha os dados corretamente!")},
-                      },
+                      onPressed: () => {},
                     ),
                   ),
                 ),

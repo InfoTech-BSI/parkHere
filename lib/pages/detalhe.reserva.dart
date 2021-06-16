@@ -58,7 +58,7 @@ class ListaReserva extends StatelessWidget {
           title: Text(numero),
           leading: CircleAvatar(
             backgroundColor: Colors.white,
-            child: Image.asset("whats.png"),
+            child: Image.asset("assets/whats.png"),
           ),
         )
       );
@@ -137,7 +137,7 @@ class ListaReserva extends StatelessWidget {
                 title: Text(estacionamento[0]["telefone"]),
                 leading: CircleAvatar(
                   backgroundColor: Colors.white,
-                  child: Image.asset("phone.png"),
+                  child: Image.asset("assets/phone.png"),
                 ),
               )
             ),
@@ -151,7 +151,7 @@ class ListaReserva extends StatelessWidget {
             SizedBox(
               width: 150,
               height: 150,
-              child: Image.asset("qrcode.png"),
+              child: Image.asset("assets/qrcode.png"),
             ),
             SizedBox(
               height: 20,

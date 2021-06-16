@@ -39,7 +39,7 @@ class ListaEstacionamentos extends StatelessWidget {
               return Card(
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: AssetImage("estacionamentos/"+estacionamentos[index]["imagem"]),
+                    backgroundImage: AssetImage("assets/estacionamentos/"+estacionamentos[index]["imagem"]),
                     backgroundColor: Colors.white,
                   ),
                   title: Text(estacionamentos[index]["nome"]),
